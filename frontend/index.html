@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DeepScholar | Premium Research Agent</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-gray-50 text-slate-800 antialiased selection:bg-amber-200">
+    <div id="root"></div>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+      mermaid.initialize({ 
+        startOnLoad: false, 
+        theme: 'base',
+        themeVariables: {
+          primaryColor: '#4f46e5',
+          primaryTextColor: '#e2e8f0',
+          primaryBorderColor: '#6366f1',
+          lineColor: '#818cf8',
+          secondaryColor: '#1e1b4b',
+          tertiaryColor: '#0f172a',
+          background: '#0f0f1a',
+          mainBkg: '#1e1b4b',
+          nodeBorder: '#6366f1',
+          clusterBkg: '#111827',
+          titleColor: '#c7d2fe',
+          edgeLabelBackground: '#1e1b4b',
+          fontFamily: 'Inter, sans-serif',
+          fontSize: '14px'
+        }
+      });
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
