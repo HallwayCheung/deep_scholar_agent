@@ -24,7 +24,7 @@ llm_client = OpenAI(
 )
 
 # def call_qwen(prompt: str) -> str:
-#     """通用的 Qwen 调用辅助函数"""
+#     """General Qwen invocation helper function."""
 #     response = llm_client.chat.completions.create(
 #         model="qwen-plus",
 #         messages=[{"role": "user", "content": prompt}],
@@ -33,7 +33,7 @@ llm_client = OpenAI(
 #     return response.choices[0].message.content
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
 def call_qwen(prompt: str) -> str:
-    """通用的 Qwen 调用辅助函数 (具备自动重试能力)"""
+    """General Qwen invocation helper function (capable of automatic retries)."""
     try:
         response = llm_client.chat.completions.create(
             model="qwen-plus",
@@ -46,11 +46,11 @@ def call_qwen(prompt: str) -> str:
         raise e # 必须把异常抛出，tenacity 才能捕获并触发重试
 
 # ==========================================
-# 节点 1：Planner (规划师)
+# Node 1: Planner
 # ==========================================
 def planner_node(state: ResearchState) -> Dict[str, Any]:
     """
-    将宏观课题拆解为 3-4 个具体的子问题。
+    Deconstruct the macro-level research topic into 3-4 specific sub-questions.
     """
     topic = state.get("research_topic", "").strip()
     print(f"\n[节点执行] 👷 Planner 正在拆解课题: {topic}")
@@ -89,10 +89,10 @@ def planner_node(state: ResearchState) -> Dict[str, Any]:
 
 
 # ==========================================
-# 节点 2：Screener (初筛员)
+# Node 2: Screener
 # ==========================================
 def screener_node(state: ResearchState) -> Dict[str, Any]:
-    """【真实版】初筛员：接入 Semantic Scholar 真实 API 获取数据"""
+    """Screener: integrate with the real Semantic Scholar API to fetch full papers."""
     print(f"\n[节点执行] 🧐 Screener 正在全网检索真实文献...")
     topic = state.get("research_topic", "")
     min_papers = state.get("min_papers", 5)
@@ -228,8 +228,8 @@ def screener_node(state: ResearchState) -> Dict[str, Any]:
 
 def data_miner_node(state: ResearchState) -> Dict[str, Any]:
     """
-    数据挖掘员：原生Function Calling 智能体。
-    强制大模型将文本中的定量指标提取为结构化 JSON。
+    Data Miner: Native Function Calling agent.
+    Forces the LLM to extract quantitative metrics from text into structured JSON.
     """
     print(f"\n[节点执行] 📊 DataMiner 正在使用原生 Function Calling 提取定量数据...")
 
@@ -413,7 +413,7 @@ def reader_node(state: ResearchState) -> Dict[str, Any]:
 
 
 def writer_node(state: ResearchState) -> Dict[str, Any]:
-    """主笔：整合信息，生成最终带有严格引用的中文学术草稿"""
+    """Chief Writer: Synthesize information and generate the final academic draft with rigorous citations."""
     print(f"\n[节点执行] ✍️ Writer 正在撰写学术综述草稿...")
 
     insights = state.get("extracted_insights", [])
@@ -485,8 +485,8 @@ def writer_node(state: ResearchState) -> Dict[str, Any]:
 
 def reviewer_node(state: ResearchState) -> Dict[str, Any]:
     """
-    同行评审员（终极防线升级版）：Semantic Reverse RAG (语义反向校验)。
-    提取引用标签，从本地召回原始英文 Chunk，利用 LLM 进行跨语言的语义逻辑核查。
+    Peer Reviewer (Ultimate defense line): Semantic Reverse RAG.
+    Extract citation tags, recall original English Chunks from the local DB, and use the LLM for cross-lingual semantic logic checking.
     """
     print(f"\n[节点执行] 🕵️‍♂️ Reviewer 启动 Semantic Reverse RAG 校验机制...")
 
@@ -606,7 +606,7 @@ def reviewer_node(state: ResearchState) -> Dict[str, Any]:
 
 
 def editor_node(state: ResearchState) -> Dict[str, Any]:
-    """编辑员：根据人类的反馈指令，结合上下文修改草稿。"""
+    """Editor: Modify the draft based on human feedback instructions and context."""
     print("\n[节点执行] 📝 Editor 正在根据您的指令修改草稿...")
 
     feedback = state.get("user_feedback", "")
@@ -676,12 +676,12 @@ def editor_node(state: ResearchState) -> Dict[str, Any]:
 
 
 # ==========================================
-# 节点 6：Critic (批判性审视智能体 - Phase 6)
+# Node 6: Critic (Red Team Agent - Phase 6)
 # ==========================================
 def critic_node(state: ResearchState) -> Dict[str, Any]:
     """
-    批判性思维注入：作为"科研红队"，对已生成的综述提出 3-5 个深刻的质疑性问题，
-    帮助初学者识别该领域潜在的坑、局限性和争议点。
+    Critical Thinking Injection: Act as a "Research Red Team", raise 3-5 profound challenging questions regarding the generated review,
+    helping beginners to identify potential pitfalls, limitations, and controversies in the field.
     """
     print(f"\n[节点执行] 🔴 Critic 正在进行红队批判分析...")
 

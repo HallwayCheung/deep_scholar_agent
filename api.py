@@ -80,7 +80,7 @@ async def start_research(request: Request):
                 for node_name, state_update in output.items():
                     current = research_app.get_state(config)
                     
-                    # 🔴 Phase 8: 提取节点日志进行即时推送 (Thought Streaming)
+                    # 🔴 Phase 8: Extract node logs for real-time pushing (Thought Streaming)
                     latest_logs = state_update.get("logs", [])
                     for log in latest_logs:
                         yield format_sse({
@@ -89,7 +89,7 @@ async def start_research(request: Request):
                             "node": node_name
                         })
 
-                    # 推送完整状态更新以供前端同步 UI
+                    # Push full state update to synchronize frontend UI
                     yield format_sse({
                         "type": "state_update",
                         "node": node_name,

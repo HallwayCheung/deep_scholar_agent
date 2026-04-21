@@ -1,4 +1,3 @@
-# core/vector_db.py
 import chromadb
 
 
@@ -8,7 +7,7 @@ class LocalPaperDB:
         self.collection = self.client.get_or_create_collection(name="papers")
 
     def add_chunks(self, chunks: list, paper_id: str | None = None):
-        """将切好的 Markdown 块存入向量库。"""
+        """Store chunked Markdown blocks into the vector database."""
         if not chunks:
             return
 
@@ -24,7 +23,7 @@ class LocalPaperDB:
         print(f"💾 成功将 {label} 的 {len(chunks)} 个数据块灌入 ChromaDB！")
 
     def search(self, query: str, top_k: int = 4) -> str:
-        """真实检索并拼接为 Agent 认识的格式"""
+        """Perform real retrieval and format the result for the Agent."""
         results = self.collection.query(query_texts=[query], n_results=top_k)
 
         if not results['documents'] or not results['documents'][0]:
@@ -40,7 +39,7 @@ class LocalPaperDB:
         return observation_text
 
     def verify_quote_exists(self, paper_id: str, quote: str, threshold: float = 0.5) -> bool:
-        """用基于词汇重合度的模糊匹配校验引用原文是否存在。"""
+        """Verify the existence of the quoted original text using fuzzy matching based on vocabulary overlap."""
         if paper_id == "None":
             return True
 

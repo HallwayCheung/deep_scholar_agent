@@ -12,7 +12,7 @@ class AcademicPDFParser:
 
     @retry(stop=stop_after_attempt(2), wait=wait_fixed(3))
     def download_pdf(self, pdf_url: str, paper_id: str) -> str:
-        """从开放链接下载 PDF，失败时自动重试。"""
+        """Download PDF from an open link, automatically retry on failure."""
         if not pdf_url:
             return ""
 
@@ -37,7 +37,7 @@ class AcademicPDFParser:
             raise
 
     def parse_to_markdown(self, pdf_path: str, paper_id: str) -> str:
-        """将 PDF 转为 Markdown，并保留调试用备份。"""
+        """Convert PDF to Markdown, and keep a backup for debugging."""
         if not os.path.exists(pdf_path):
             return ""
 

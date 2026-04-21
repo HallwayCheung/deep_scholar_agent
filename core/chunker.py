@@ -3,14 +3,14 @@ import re
 
 class LocalPaperDB:
     def __init__(self):
-        # 持久化存储在本地
+        # Persistent local storage
         self.client = chromadb.PersistentClient(path="./workspace/chroma_db")
         self.collection = self.client.get_or_create_collection(name="papers")
 
     def add_chunks(self, chunks: list, paper_id: str):
-        """将语义块灌入 ChromaDB，必须绑定 Metadata"""
+        """Ingest semantic chunks into ChromaDB; must bind Metadata."""
         documents = [chunk["text"] for chunk in chunks]
-        # 这里的 metadata 是防幻觉的关键！
+        # Metadata is the key to preventing hallucinations!
         metadatas = [{"paper_id": paper_id, "section": chunk["header"]} for chunk in chunks]
         ids = [f"{paper_id}_chunk_{i}" for i in range(len(chunks))]
 
@@ -19,8 +19,8 @@ class LocalPaperDB:
 
 
 def chunk_markdown(md_text: str, paper_id: str) -> list:
-    """基于 Markdown 标题树的语义切块器"""
-    # 按照 Markdown 标题 (如 # Intro, ## Methods) 进行分割
+    """Semantic chunker based on Markdown header trees."""
+    # Split according to Markdown headers (e.g. # Intro, ## Methods)
     sections = re.split(r'(^#+\s+.*)', md_text, flags=re.MULTILINE)
 
     chunks = []
@@ -31,11 +31,11 @@ def chunk_markdown(md_text: str, paper_id: str) -> list:
         if not text:
             continue
 
-        # 如果是标题行，更新当前上下文
+        # If it is a header line, update the current context
         if re.match(r'^#+\s+', text):
             current_header = text
         else:
-            # 如果是内容段落，将其与标题打包成一个 Chunk
+            # If it is a content paragraph, bundle it with the header into a Chunk
             chunk_content = f"{current_header}\n{text}"
             chunks.append({
                 "header": current_header,
