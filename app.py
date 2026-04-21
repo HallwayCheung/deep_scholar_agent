@@ -330,6 +330,9 @@ config = {"configurable": {"thread_id": st.session_state.thread_id}}
 
 @st.cache_resource
 def get_cached_graph():
+    """
+    Initialize and cache the LangGraph workflow singleton.
+    """
     return build_research_graph()
 
 
@@ -337,6 +340,9 @@ app = get_cached_graph()
 
 
 def render_timeline(current_node):
+    """
+    Generate the HTML/CSS for the vertical progress timeline of the multi-agent orchestration.
+    """
     nodes = [
         {"id": "Planner", "n": "1", "t": "Topic Deconstruction", "d": "Splitting topic into core sub-questions."},
         {"id": "Screener", "n": "2", "t": "Literature Screening", "d": "Retrieving and filtering high-impact papers."},
@@ -366,6 +372,9 @@ def render_timeline(current_node):
 
 
 def format_draft_with_tooltips(draft_text):
+    """
+    Process the AI-generated draft to convert citation tags into interactive HTML tooltips.
+    """
     pattern = r'\[来源:\s*(.*?),\s*原文:\s*"(.*?)"\]'
 
     def replace_match(match):
@@ -377,6 +386,9 @@ def format_draft_with_tooltips(draft_text):
 
 
 def generate_latex(draft_text):
+    """
+    Convert the Markdown draft into a standard LaTeX document structure.
+    """
     clean_text = re.sub(r'\[来源:.*?\]', '', draft_text)
     return f"""\\documentclass[12pt, a4paper]{{article}}
 \\usepackage[utf8]{{inputenc}}
@@ -393,6 +405,9 @@ def generate_latex(draft_text):
 
 
 def build_summary_cards(state_values):
+    """
+    Generate the high-level metrics dashboard (stat cards) from the current research state.
+    """
     candidate_papers = state_values.get("candidate_papers", [])
     selected_papers = state_values.get("selected_papers", [])
     extracted_insights = state_values.get("extracted_insights", [])
@@ -409,6 +424,9 @@ def build_summary_cards(state_values):
 
 
 def render_status_banner(current_state, is_suspended):
+    """
+    Display the current operational status and next suggested actions in a persistent banner.
+    """
     if not current_state.values:
         return '<div class="status-banner"><strong>Status:</strong> Awaiting a research topic to start the pipeline.</div>'
     if is_suspended:
@@ -422,6 +440,9 @@ def render_status_banner(current_state, is_suspended):
 
 
 def process_graph(input_data, timeline_placeholder, details_placeholder):
+    """
+    Invoke the LangGraph stream, capturing intermediate state updates to refresh the UI in real-time.
+    """
     for output in app.stream(input_data, config=config):
         for node_name, _ in output.items():
             timeline_placeholder.markdown(render_timeline(node_name), unsafe_allow_html=True)

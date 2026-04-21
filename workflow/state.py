@@ -5,45 +5,45 @@ import operator
 
 class ResearchState(TypedDict, total=False):
     """
-    定义 LangGraph 图流转的全局状态（State）。
-    这也是整个多智能体团队共享的“任务白板”。
+    Define the global state for LangGraph workflow orchestration.
+    This acts as the shared 'task whiteboard' for the multi-agent team.
     """
-    # 1. 初始输入
+    # 1. Initial Inputs
     research_topic: str
-    min_papers: int  # 最小获取文献数
+    min_papers: int  # Minimum number of papers to retrieve
 
-    # 2. Planner 产出
+    # 2. Planner Outputs
     sub_questions: List[str]
-    concept_map: str  # [Phase4] Mermaid 概念拓扑图
+    concept_map: str  # [Phase 4] Mermaid conceptual topology map
 
-    # 3. Screener 产出
-    candidate_papers: List[Dict[str, Any]]  # 初搜回来的所有论文元数据
-    selected_papers: List[Dict[str, Any]]  # 打分过滤后，真正需要下载精读的论文
+    # 3. Screener Outputs
+    candidate_papers: List[Dict[str, Any]]  # Metadata for all initially retrieved papers
+    selected_papers: List[Dict[str, Any]]  # Papers filtered for downloading and deep reading
 
-    # 4. Reader 产出 (核心亮点：使用 operator.add 支持并发追加内容)
+    # 4. Reader Outputs (Core Highlight: uses operator.add to support concurrent content appending)
     extracted_insights: Annotated[List[str], operator.add]
 
-    # 5. 新增：用于存储 DataMiner 提取的结构化数据
+    # 5. DataMiner Outputs: Structured quantitative metrics
     quantitative_data: List[Dict[str, str]]
 
-    # 6. Writer & Reviewer 产出
+    # 6. Writer & Reviewer Outputs
     draft: str
     review_comments: str
 
-    # 🔴 Day 22 新增：用于多轮对话与修改
-    user_feedback: str  # 用户在聊天框输入的最新指令
-    chat_history: List[Dict]  # 记录历史对话上下文 [{"role": "user"/"assistant", "content": "..."}]
+    # 🔴 Day 22: Multi-turn interaction and revisions
+    user_feedback: str  # Latest instruction input from the user chat box
+    chat_history: List[Dict]  # Historical conversation context [{"role": "user"/"assistant", "content": "..."}]
     
-    # 🔴 Phase 4 新增：术语字典
+    # 🔴 Phase 4: Domain terminology dictionary
     jargon_dictionary: List[Dict[str, str]]
     
-    # 🔴 Phase 6 新增：批判性审视清单（红队分析）
+    # 🔴 Phase 6: Critical review checklist (Red Team Analysis)
     critical_checklist: List[Dict[str, str]]
     
-    # 🔴 Phase 8 新增：Agent 思维流日志
+    # 🔴 Phase 8: Agent thought-stream logs
     logs: Annotated[List[str], operator.add]
 
-    # 6. 工程兜底：记录修改次数，防止无限重写
+    # 6. Safety Guard: Track revision count to prevent infinite rewrite loops
     revision_count: int
 
 
